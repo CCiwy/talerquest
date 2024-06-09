@@ -17,7 +17,7 @@ BACKEND_MANAGE := cd ${BACKEND_DIR} && python manage.py
 BACKEND_PIPENV := cd ${BACKEND_DIR} && pipenv
 
 PYTHONFAULTHANDLER := 1
-PIPENV_VENV_IN_PROJECT=1
+PIPENV_VENV_IN_PROJECT :=1
 
 VENV := ${BACKEND_DIR}/.venv
 PATH := ${VENV}/bin:${ROOT_DIR}/node_modules/.bin:${PATH}
@@ -27,21 +27,28 @@ BACKEND_APP_DIR := ${BACKEND_DIR}/core
 DJANGO_SETTINGS_DIR := ${BACKEND_APP_DIR}/settings
 DJANGO_SETTINGS_MODULE := core.settings.${ENV}
 
+install:
+	@make backend/install
+	@make frontend/install
 
 frontend/install:
 	@${FRONTEND_BIN} install 
 
+frontend/install/%:
+	@${FRONTEND_BIN} install *$ --save-dev
+
 frontend/run:
 	@${FRONTEND_BIN} run dev 
+
 
 pipenv/%:
 	@${BACKEND_PIPENV} $*
 
-install:
-	@make backend/install
 
 backend/install:
 	@${BACKEND_PIPENV} install -d
+
+
 
 backend/manage/%:
 	@${BACKEND_MANAGE} *$
